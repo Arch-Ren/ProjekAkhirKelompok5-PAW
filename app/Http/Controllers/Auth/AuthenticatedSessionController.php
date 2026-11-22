@@ -19,7 +19,7 @@ class AuthenticatedSessionController extends Controller
     public function create(): Response
     {
         return Inertia::render('Auth/Login', [
-            'canResetPassword' => Route::has('password.request'),
+            'canResetPassword' => false,
             'status' => session('status'),
         ]);
     }
@@ -29,6 +29,12 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
+        if (Auth::guard('web')->check()) {
+            Auth::guard('web')->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+        }
+
         $request->authenticate();
 
         $request->session()->regenerate();

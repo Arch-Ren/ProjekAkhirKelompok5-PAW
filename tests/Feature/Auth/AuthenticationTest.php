@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Auth;
 
-use App\Models\User;
+use App\Models\AkunAdmin;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -17,36 +17,49 @@ class AuthenticationTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function test_users_can_authenticate_using_the_login_screen(): void
+    public function test_admin_can_authenticate_using_the_login_screen(): void
     {
-        $user = User::factory()->create();
+        $admin = AkunAdmin::factory()->create();
 
         $response = $this->post('/login', [
-            'email' => $user->email,
+            'username' => $admin->username,
             'password' => 'password',
         ]);
 
-        $this->assertAuthenticated();
+        $this->assertAuthenticatedAs($admin);
         $response->assertRedirect(route('dashboard', absolute: false));
     }
 
-    public function test_users_can_not_authenticate_with_invalid_password(): void
+    public function test_admin_can_not_authenticate_with_invalid_password(): void
     {
-        $user = User::factory()->create();
+        $admin = AkunAdmin::factory()->create();
 
         $this->post('/login', [
-            'email' => $user->email,
+            'username' => $admin->username,
             'password' => 'wrong-password',
         ]);
 
         $this->assertGuest();
     }
 
-    public function test_users_can_logout(): void
+    public function test_authenticated_admin_posting_invalid_login_is_rejected_and_logged_out(): void
     {
-        $user = User::factory()->create();
+        $admin = AkunAdmin::factory()->create();
 
-        $response = $this->actingAs($user)->post('/logout');
+        $response = $this->actingAs($admin)->post('/login', [
+            'username' => $admin->username,
+            'password' => 'qwerty',
+        ]);
+
+        $response->assertSessionHasErrors('username');
+        $this->assertGuest();
+    }
+
+    public function test_admin_can_logout(): void
+    {
+        $admin = AkunAdmin::factory()->create();
+
+        $response = $this->actingAs($admin)->post('/logout');
 
         $this->assertGuest();
         $response->assertRedirect('/');
