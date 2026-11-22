@@ -11,16 +11,20 @@ class LaporanKehilanganTest extends TestCase
 {
     use RefreshDatabase;
 
+    private function admin(): User
+    {
+        // make() tanpa simpan: tabel users sudah diganti akun_admin di fondasi, login belum disesuaikan
+        return User::factory()->make();
+    }
+
     private function dataValid(array $ubah = []): array
     {
         return [
             'nama_pelapor' => 'Budi',
             'kontak_pelapor' => '081234567890',
-            'nama_barang' => 'Dompet hitam',
-            'kategori' => 'Dompet dan Tas',
-            'ciri_ciri' => 'Kulit, ada KTM di dalam',
-            'lokasi_terakhir' => 'Gedung F lantai 2',
-            'waktu_hilang' => now()->subDay()->toDateTimeString(),
+            'deskripsi_barang_hilang' => 'Dompet hitam kulit, ada KTM di dalam',
+            'perkiraan_lokasi' => 'Gedung F lantai 2',
+            'perkiraan_waktu' => now()->subDay()->toDateTimeString(),
             ...$ubah,
         ];
     }
@@ -32,41 +36,37 @@ class LaporanKehilanganTest extends TestCase
 
     public function test_admin_bisa_menambah_laporan(): void
     {
-        $admin = User::factory()->create();
-
-        $this->actingAs($admin)
+        $this->actingAs($this->admin())
             ->post('/laporan-kehilangan', $this->dataValid())
             ->assertRedirect(route('laporan-kehilangan.index'));
 
         $this->assertDatabaseHas('laporan_kehilangan', [
-            'nama_barang' => 'Dompet hitam',
-            'user_id' => $admin->id,
-            'status' => LaporanKehilangan::STATUS_AKTIF,
+            'nama_pelapor' => 'Budi',
+            'tanggal_lapor' => now()->toDateString(),
         ]);
     }
 
-    public function test_laporan_dengan_kategori_salah_ditolak(): void
+    public function test_laporan_dengan_waktu_masa_depan_ditolak(): void
     {
-        $this->actingAs(User::factory()->create())
-            ->post('/laporan-kehilangan', $this->dataValid(['kategori' => 'Mobil']))
-            ->assertSessionHasErrors('kategori');
+        $this->actingAs($this->admin())
+            ->post('/laporan-kehilangan', $this->dataValid(['perkiraan_waktu' => now()->addDay()->toDateTimeString()]))
+            ->assertSessionHasErrors('perkiraan_waktu');
 
         $this->assertDatabaseCount('laporan_kehilangan', 0);
     }
 
-    public function test_admin_bisa_mengubah_status_dan_menghapus(): void
+    public function test_admin_bisa_mengubah_dan_menghapus(): void
     {
-        $admin = User::factory()->create();
-        $laporan = LaporanKehilangan::create([...$this->dataValid(), 'user_id' => $admin->id]);
+        $laporan = LaporanKehilangan::create([...$this->dataValid(), 'tanggal_lapor' => now()->toDateString()]);
 
-        $this->actingAs($admin)
-            ->patch("/laporan-kehilangan/{$laporan->id}", $this->dataValid(['status' => LaporanKehilangan::STATUS_DITEMUKAN]))
+        $this->actingAs($this->admin())
+            ->patch("/laporan-kehilangan/{$laporan->id_laporan}", $this->dataValid(['perkiraan_lokasi' => 'Kantin']))
             ->assertRedirect(route('laporan-kehilangan.show', $laporan));
 
-        $this->assertSame(LaporanKehilangan::STATUS_DITEMUKAN, $laporan->fresh()->status);
+        $this->assertSame('Kantin', $laporan->fresh()->perkiraan_lokasi);
 
-        $this->actingAs($admin)
-            ->delete("/laporan-kehilangan/{$laporan->id}")
+        $this->actingAs($this->admin())
+            ->delete("/laporan-kehilangan/{$laporan->id_laporan}")
             ->assertRedirect(route('laporan-kehilangan.index'));
 
         $this->assertDatabaseCount('laporan_kehilangan', 0);
