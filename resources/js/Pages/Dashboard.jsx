@@ -1,26 +1,20 @@
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
+import MainLayout from '@/Layouts/MainLayout';
+import LaravelLogo from '@/Components/LaravelLogo';
 
 export default function Dashboard() {
     return (
-        <AuthenticatedLayout
-            header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                    Dashboard
-                </h2>
-            }
-        >
-            <Head title="Dashboard" />
-
-            <div className="py-12">
-                <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                    <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg">
-                        <div className="p-6 text-gray-900">
-                            You're logged in!
-                        </div>
+        <MainLayout title="Dashboard">
+            <div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
+                <div className="flex flex-col items-center gap-5">
+                    <div className="rounded-2xl border border-[#313244] bg-[#181825] p-6 shadow-xl shadow-[#11111b]/50">
+                        <LaravelLogo className="h-16 w-auto text-[#f38ba8]" />
                     </div>
+
+                    <p className="text-lg font-medium tracking-wide text-[#cdd6f4]">
+                        anda sekarang di dashboard
+                    </p>
                 </div>
             </div>
-        </AuthenticatedLayout>
+        </MainLayout>
     );
 }
