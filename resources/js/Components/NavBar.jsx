@@ -41,7 +41,7 @@ export default function Navbar() {
                         </Link>
                         {isLoggedIn && (
                             <Link
-                                href="/klaim"
+                                href="/admin/klaim"
                                 className={navButtonClass(isKlaim)}
                             >
                                 Klaim
