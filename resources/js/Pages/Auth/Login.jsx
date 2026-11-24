@@ -26,7 +26,7 @@ export default function Login({ status, canResetPassword }) {
         'mt-1 block w-full !border-[#45475a] !bg-[#1e1e2e] !text-[#cdd6f4] placeholder:!text-[#6c7086] focus:!border-[#cba6f7] focus:!ring-[#cba6f7]';
 
     return (
-        <div className="flex min-h-screen flex-col items-center bg-[#1e1e2e] pt-6 text-[#cdd6f4] selection:bg-[#cba6f7] selection:text-[#11111b] sm:justify-center sm:pt-0">
+        <div className="flex min-h-screen flex-col items-center justify-center bg-[#1e1e2e] px-4 py-8 text-[#cdd6f4] selection:bg-[#cba6f7] selection:text-[#11111b] sm:px-6 sm:py-10">
             <Head title="Log in" />
 
             <div>
@@ -35,7 +35,7 @@ export default function Login({ status, canResetPassword }) {
                 </Link>
             </div>
 
-            <div className="mt-6 w-full overflow-hidden border border-[#313244] bg-[#181825] px-6 py-4 shadow-md shadow-[#11111b]/50 sm:max-w-md sm:rounded-lg">
+            <div className="mt-6 w-full max-w-md overflow-hidden rounded-xl border border-[#313244] bg-[#181825] px-6 py-5 shadow-xl shadow-[#11111b]/50">
                 {status && (
                     <div className="mb-4 text-sm font-medium text-[#a6e3a1]">
                         {status}

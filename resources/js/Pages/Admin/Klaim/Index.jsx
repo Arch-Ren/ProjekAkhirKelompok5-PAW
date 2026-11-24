@@ -4,6 +4,10 @@ import {
     Dialog,
     DialogPanel,
     DialogTitle,
+    Listbox,
+    ListboxButton,
+    ListboxOption,
+    ListboxOptions,
     Transition,
     TransitionChild,
 } from '@headlessui/react';
@@ -84,11 +88,11 @@ export default function Index({
 
     return (
         <MainLayout title="Daftar Klaim">
-            <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 px-4 py-8 sm:px-6 lg:px-8">
-                {/* Baris Atas: Judul di kiri, tombol + Baru di kanan */}
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-5 px-4 py-6 sm:gap-6 sm:px-6 sm:py-8 lg:px-8">
+                {/* Baris Judul */}
+                <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
                     <div>
-                        <h1 className="text-2xl font-bold tracking-tight text-[#cdd6f4]">
+                        <h1 className="text-xl font-bold tracking-tight text-[#cdd6f4] sm:text-2xl">
                             Daftar Klaim
                         </h1>
                         <p className="mt-1 text-sm text-[#a6adc8]">
@@ -96,25 +100,106 @@ export default function Index({
                         </p>
                     </div>
 
-                    <button
-                        type="button"
-                        onClick={() => setShowCreateModal(true)}
-                        className="inline-flex items-center justify-center gap-1.5 self-start rounded-lg bg-[#cba6f7] px-4 py-2.5 text-sm font-semibold text-[#11111b] shadow-sm transition hover:bg-[#b4befe] focus:outline-none focus:ring-2 focus:ring-[#cba6f7]/60 focus:ring-offset-2 focus:ring-offset-[#1e1e2e] sm:self-auto"
-                    >
-                        <span aria-hidden="true" className="text-base leading-none">
-                            +
-                        </span>
-                        <span>Baru</span>
-                    </button>
+                    <p className="text-xs text-[#a6adc8]">
+                        Total:{' '}
+                        <span className="font-semibold text-[#cdd6f4]">
+                            {total}
+                        </span>{' '}
+                        klaim
+                    </p>
                 </div>
 
-                {/* Filter Status di atas tabel */}
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                    <div className="flex flex-wrap items-center gap-2">
+                {/* Toolbar: Filter Status di kiri (dropdown di < lg, pill di >= lg) & tombol + Baru sejajar menempel di kanan */}
+                <div className="flex items-center justify-between gap-3">
+                    {/* Dropdown Filter Status untuk mobile, sm, dan md (< lg) */}
+                    <div className="relative lg:hidden">
+                        <Listbox
+                            value={activeStatus ?? ''}
+                            onChange={(value) =>
+                                handleFilterStatus(value || null)
+                            }
+                        >
+                            <ListboxButton className="inline-flex min-w-[160px] items-center justify-between gap-2 rounded-lg border border-[#313244] bg-[#181825] px-3.5 py-2 text-xs font-medium text-[#cdd6f4] transition hover:border-[#45475a] focus:outline-none focus:ring-2 focus:ring-[#cba6f7]/50 sm:min-w-[190px] sm:text-sm">
+                                <span className="truncate">
+                                    <span className="text-[#a6adc8]">
+                                        Status:{' '}
+                                    </span>
+                                    <span className="font-semibold text-[#cba6f7]">
+                                        {activeStatus ?? 'Semua'}
+                                    </span>
+                                </span>
+                                <svg
+                                    className="h-4 w-4 shrink-0 text-[#a6adc8]"
+                                    viewBox="0 0 20 20"
+                                    fill="currentColor"
+                                    aria-hidden="true"
+                                >
+                                    <path
+                                        fillRule="evenodd"
+                                        d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
+                                        clipRule="evenodd"
+                                    />
+                                </svg>
+                            </ListboxButton>
+
+                            <ListboxOptions
+                                transition
+                                className="absolute left-0 top-full z-20 mt-2 w-48 origin-top-left rounded-xl border border-[#313244] bg-[#181825] p-1.5 shadow-xl shadow-[#11111b]/60 transition duration-150 ease-out focus:outline-none data-[closed]:scale-95 data-[closed]:opacity-0"
+                            >
+                                <ListboxOption
+                                    value=""
+                                    className="group flex cursor-pointer items-center justify-between rounded-lg px-3 py-2 text-xs font-medium text-[#cdd6f4] transition data-[focus]:bg-[#313244] data-[selected]:bg-[#313244]/70 data-[selected]:text-[#cba6f7] sm:text-sm"
+                                >
+                                    <span>Semua</span>
+                                    {activeStatus === null && (
+                                        <svg
+                                            className="h-4 w-4 text-[#cba6f7]"
+                                            viewBox="0 0 20 20"
+                                            fill="currentColor"
+                                            aria-hidden="true"
+                                        >
+                                            <path
+                                                fillRule="evenodd"
+                                                d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z"
+                                                clipRule="evenodd"
+                                            />
+                                        </svg>
+                                    )}
+                                </ListboxOption>
+
+                                {statusList.map((status) => (
+                                    <ListboxOption
+                                        key={status}
+                                        value={status}
+                                        className="group flex cursor-pointer items-center justify-between rounded-lg px-3 py-2 text-xs font-medium text-[#cdd6f4] transition data-[focus]:bg-[#313244] data-[selected]:bg-[#313244]/70 data-[selected]:text-[#cba6f7] sm:text-sm"
+                                    >
+                                        <span>{status}</span>
+                                        {activeStatus === status && (
+                                            <svg
+                                                className="h-4 w-4 text-[#cba6f7]"
+                                                viewBox="0 0 20 20"
+                                                fill="currentColor"
+                                                aria-hidden="true"
+                                            >
+                                                <path
+                                                    fillRule="evenodd"
+                                                    d="M16.704 4.153a.75.75 0 0 1 .143 1.052l-8 10.5a.75.75 0 0 1-1.127.075l-4.5-4.5a.75.75 0 0 1 1.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 0 1 1.05-.143Z"
+                                                    clipRule="evenodd"
+                                                />
+                                            </svg>
+                                        )}
+                                    </ListboxOption>
+                                ))}
+                            </ListboxOptions>
+                        </Listbox>
+                    </div>
+
+                    {/* Pill Filter Status untuk layar besar (>= lg) */}
+                    <div className="hidden flex-wrap items-center gap-2 lg:flex">
                         <button
                             type="button"
                             onClick={() => handleFilterStatus(null)}
-                            className={`rounded-lg border px-3.5 py-1.5 text-xs font-medium transition ${
+                            className={`rounded-lg border px-3.5 py-2 text-xs font-medium transition ${
                                 activeStatus === null
                                     ? 'border-[#cba6f7]/50 bg-[#313244] text-[#cba6f7]'
                                     : 'border-[#313244] bg-[#181825] text-[#a6adc8] hover:border-[#45475a] hover:text-[#cdd6f4]'
@@ -130,7 +215,7 @@ export default function Index({
                                     key={status}
                                     type="button"
                                     onClick={() => handleFilterStatus(status)}
-                                    className={`rounded-lg border px-3.5 py-1.5 text-xs font-medium transition ${
+                                    className={`rounded-lg border px-3.5 py-2 text-xs font-medium transition ${
                                         isActive
                                             ? 'border-[#cba6f7]/50 bg-[#313244] text-[#cba6f7]'
                                             : 'border-[#313244] bg-[#181825] text-[#a6adc8] hover:border-[#45475a] hover:text-[#cdd6f4]'
@@ -142,80 +227,64 @@ export default function Index({
                         })}
                     </div>
 
-                    <p className="text-xs text-[#a6adc8]">
-                        Total: <span className="font-semibold text-[#cdd6f4]">{total}</span> klaim
-                    </p>
+                    {/* Tombol + Baru sejajar dengan filter & menempel di kanan */}
+                    <button
+                        type="button"
+                        onClick={() => setShowCreateModal(true)}
+                        className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-lg bg-[#cba6f7] px-3.5 py-2 text-sm font-semibold text-[#11111b] shadow-sm transition hover:bg-[#b4befe] focus:outline-none focus:ring-2 focus:ring-[#cba6f7]/60 focus:ring-offset-2 focus:ring-offset-[#1e1e2e] sm:px-4"
+                    >
+                        <span
+                            aria-hidden="true"
+                            className="text-base leading-none"
+                        >
+                            +
+                        </span>
+                        <span>Baru</span>
+                    </button>
                 </div>
 
                 {/* Tabel Data Klaim */}
-                <div className="overflow-hidden rounded-2xl border border-[#313244] bg-[#181825] shadow-xl shadow-[#11111b]/40">
+                <div className="min-w-0 overflow-hidden rounded-2xl border border-[#313244] bg-[#181825] shadow-xl shadow-[#11111b]/40">
                     <div className="overflow-x-auto">
                         <table className="min-w-full divide-y divide-[#313244] text-left text-sm">
                             <thead className="bg-[#11111b]/60 text-xs font-semibold uppercase tracking-wider text-[#a6adc8]">
                                 <tr>
-                                    <th scope="col" className="whitespace-nowrap px-4 py-3.5">
+                                    <th scope="col" className="whitespace-nowrap px-3 py-3 sm:px-4 sm:py-3.5">
                                         Kode Klaim
                                     </th>
-                                    <th scope="col" className="whitespace-nowrap px-4 py-3.5">
+                                    <th scope="col" className="whitespace-nowrap px-3 py-3 sm:px-4 sm:py-3.5">
                                         Barang Temuan
                                     </th>
-                                    <th scope="col" className="whitespace-nowrap px-4 py-3.5">
+                                    <th scope="col" className="whitespace-nowrap px-3 py-3 sm:px-4 sm:py-3.5">
                                         NIM Pengklaim
                                     </th>
-                                    <th scope="col" className="whitespace-nowrap px-4 py-3.5">
+                                    <th scope="col" className="whitespace-nowrap px-3 py-3 sm:px-4 sm:py-3.5">
                                         Nama Pengklaim
                                     </th>
-                                    <th scope="col" className="px-4 py-3.5">
+                                    <th scope="col" className="px-3 py-3 sm:px-4 sm:py-3.5">
                                         Deskripsi Ciri
                                     </th>
-                                    <th scope="col" className="whitespace-nowrap px-4 py-3.5">
+                                    <th scope="col" className="whitespace-nowrap px-3 py-3 sm:px-4 sm:py-3.5">
                                         Foto Bukti
                                     </th>
-                                    <th scope="col" className="whitespace-nowrap px-4 py-3.5">
+                                    <th scope="col" className="whitespace-nowrap px-3 py-3 sm:px-4 sm:py-3.5">
                                         Tanggal Klaim
                                     </th>
-                                    <th scope="col" className="whitespace-nowrap px-4 py-3.5">
+                                    <th scope="col" className="whitespace-nowrap px-3 py-3 sm:px-4 sm:py-3.5">
                                         Status
                                     </th>
-                                    <th scope="col" className="px-4 py-3.5">
+                                    <th scope="col" className="px-3 py-3 sm:px-4 sm:py-3.5">
                                         Alasan Penolakan
                                     </th>
-                                    <th scope="col" className="whitespace-nowrap px-4 py-3.5 text-center">
+                                    <th scope="col" className="whitespace-nowrap px-3 py-3 text-center sm:px-4 sm:py-3.5">
                                         Aksi
                                     </th>
                                 </tr>
                             </thead>
 
-                            <tbody className="divide-y divide-[#313244]/80 text-[#cdd6f4]">
-                                {items.length === 0 ? (
-                                    <tr>
-                                        <td
-                                            colSpan={10}
-                                            className="px-6 py-14 text-center text-sm text-[#a6adc8]"
-                                        >
-                                            <p className="font-medium text-[#cdd6f4]">
-                                                {activeStatus
-                                                    ? `Belum ada data klaim dengan status "${activeStatus}".`
-                                                    : 'Belum ada data klaim di database.'}
-                                            </p>
-                                            <p className="mt-1 text-xs text-[#a6adc8]">
-                                                {activeStatus
-                                                    ? 'Coba ganti filter status untuk melihat data lainnya.'
-                                                    : 'Data klaim yang masuk akan ditampilkan di tabel ini.'}
-                                            </p>
-                                            {activeStatus && (
-                                                <button
-                                                    type="button"
-                                                    onClick={() => handleFilterStatus(null)}
-                                                    className="mt-4 rounded-lg border border-[#45475a] px-3.5 py-1.5 text-xs font-medium text-[#cdd6f4] transition hover:bg-[#313244]"
-                                                >
-                                                    Tampilkan Semua
-                                                </button>
-                                            )}
-                                        </td>
-                                    </tr>
-                                ) : (
-                                    items.map((item) => {
+                            {items.length > 0 && (
+                                <tbody className="divide-y divide-[#313244]/80 text-[#cdd6f4]">
+                                    {items.map((item) => {
                                         const fotoUrl = resolveFotoUrl(item.foto_bukti);
                                         const badgeClass =
                                             statusBadgeMap[item.status_klaim] ??
@@ -226,27 +295,27 @@ export default function Index({
                                                 key={item.id_klaim}
                                                 className="transition hover:bg-[#313244]/35"
                                             >
-                                                <td className="whitespace-nowrap px-4 py-3.5 font-mono text-xs font-semibold text-[#b4befe]">
+                                                <td className="whitespace-nowrap px-3 py-3 font-mono text-xs font-semibold text-[#b4befe] sm:px-4 sm:py-3.5">
                                                     {item.kode_klaim || '-'}
                                                 </td>
-                                                <td className="max-w-[200px] px-4 py-3.5 text-[#a6adc8]">
+                                                <td className="max-w-[200px] px-3 py-3 text-[#a6adc8] sm:px-4 sm:py-3.5">
                                                     {item.barang_temuan?.deskripsi_singkat ?? '-'}
                                                 </td>
-                                                <td className="whitespace-nowrap px-4 py-3.5 font-mono text-xs text-[#cdd6f4]">
+                                                <td className="whitespace-nowrap px-3 py-3 font-mono text-xs text-[#cdd6f4] sm:px-4 sm:py-3.5">
                                                     {item.nim_pengklaim || '-'}
                                                 </td>
-                                                <td className="whitespace-nowrap px-4 py-3.5 text-[#a6adc8]">
+                                                <td className="whitespace-nowrap px-3 py-3 text-[#a6adc8] sm:px-4 sm:py-3.5">
                                                     {item.mahasiswa?.nama ?? '-'}
                                                 </td>
                                                 <td
-                                                    className="max-w-xs px-4 py-3.5 text-[#cdd6f4]"
+                                                    className="max-w-xs px-3 py-3 text-[#cdd6f4] sm:px-4 sm:py-3.5"
                                                     title={item.deskripsi_ciri || ''}
                                                 >
                                                     <p className="line-clamp-2">
                                                         {item.deskripsi_ciri || '-'}
                                                     </p>
                                                 </td>
-                                                <td className="whitespace-nowrap px-4 py-3.5">
+                                                <td className="whitespace-nowrap px-3 py-3 sm:px-4 sm:py-3.5">
                                                     {fotoUrl ? (
                                                         <a
                                                             href={fotoUrl}
@@ -260,10 +329,10 @@ export default function Index({
                                                         <span className="text-[#a6adc8]">-</span>
                                                     )}
                                                 </td>
-                                                <td className="whitespace-nowrap px-4 py-3.5 text-xs text-[#a6adc8]">
+                                                <td className="whitespace-nowrap px-3 py-3 text-xs text-[#a6adc8] sm:px-4 sm:py-3.5">
                                                     {formatTanggal(item.tanggal_klaim)}
                                                 </td>
-                                                <td className="whitespace-nowrap px-4 py-3.5">
+                                                <td className="whitespace-nowrap px-3 py-3 sm:px-4 sm:py-3.5">
                                                     <span
                                                         className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium ${badgeClass}`}
                                                     >
@@ -271,23 +340,55 @@ export default function Index({
                                                     </span>
                                                 </td>
                                                 <td
-                                                    className="max-w-[200px] px-4 py-3.5 text-xs text-[#a6adc8]"
+                                                    className="max-w-[200px] px-3 py-3 text-xs text-[#a6adc8] sm:px-4 sm:py-3.5"
                                                     title={item.alasan_penolakan || ''}
                                                 >
                                                     <p className="line-clamp-2">
                                                         {item.alasan_penolakan || '-'}
                                                     </p>
                                                 </td>
-                                                <td className="whitespace-nowrap px-4 py-3.5 text-center text-[#a6adc8]">
+                                                <td className="whitespace-nowrap px-3 py-3 text-center text-[#a6adc8] sm:px-4 sm:py-3.5">
                                                     -
                                                 </td>
                                             </tr>
                                         );
-                                    })
-                                )}
-                            </tbody>
+                                    })}
+                                </tbody>
+                            )}
                         </table>
                     </div>
+
+                    {/* Empty State: selalu terpusat di layar (tidak tergeser keluar area scroll) */}
+                    {items.length === 0 && (
+                        <div className="border-t border-[#313244]/80 px-6 py-14 text-center text-sm text-[#a6adc8]">
+                            <p className="font-medium text-[#cdd6f4]">
+                                {activeStatus
+                                    ? `Belum ada data klaim dengan status "${activeStatus}".`
+                                    : 'Belum ada data klaim di database.'}
+                            </p>
+                            <p className="mt-1 text-xs text-[#a6adc8]">
+                                {activeStatus
+                                    ? 'Coba ganti filter status untuk melihat data lainnya.'
+                                    : 'Data klaim yang masuk akan ditampilkan di tabel ini.'}
+                            </p>
+                            {activeStatus && (
+                                <button
+                                    type="button"
+                                    onClick={() => handleFilterStatus(null)}
+                                    className="mt-4 rounded-lg border border-[#45475a] px-3.5 py-1.5 text-xs font-medium text-[#cdd6f4] transition hover:bg-[#313244]"
+                                >
+                                    Tampilkan Semua
+                                </button>
+                            )}
+                        </div>
+                    )}
+
+                    {/* Petunjuk geser tabel di layar kecil/menengah saat ada data */}
+                    {items.length > 0 && (
+                        <div className="border-t border-[#313244]/60 px-4 py-2 text-center text-[11px] text-[#6c7086] lg:hidden">
+                            Geser tabel ke samping untuk melihat seluruh kolom.
+                        </div>
+                    )}
 
                     {/* Footer Paginasi */}
                     {klaim?.last_page > 1 && links.length > 0 && (

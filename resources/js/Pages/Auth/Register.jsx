@@ -29,14 +29,14 @@ export default function Register() {
 
     return (
         <MainLayout title="Daftarkan Akun Admin">
-            <div className="flex flex-1 flex-col items-center justify-center px-4 py-8 sm:px-0">
+            <div className="flex flex-1 flex-col items-center justify-center px-4 py-8 sm:px-6 sm:py-10">
                 <div>
                     <Link href={route('dashboard')}>
                         <ApplicationLogo className="h-20 w-20 fill-current text-[#f38ba8]" />
                     </Link>
                 </div>
 
-                <div className="mt-6 w-full overflow-hidden border border-[#313244] bg-[#181825] px-6 py-4 shadow-md shadow-[#11111b]/50 sm:max-w-md sm:rounded-lg">
+                <div className="mt-6 w-full max-w-md overflow-hidden rounded-xl border border-[#313244] bg-[#181825] px-6 py-5 shadow-xl shadow-[#11111b]/50">
                     <form onSubmit={submit}>
                         <div>
                             <InputLabel
