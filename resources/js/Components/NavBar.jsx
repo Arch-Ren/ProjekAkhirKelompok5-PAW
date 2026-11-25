@@ -12,7 +12,9 @@ export default function Navbar() {
         ? url.startsWith('/dashboard')
         : url === '/';
     const isKlaim = url.startsWith('/klaim') || url.startsWith('/admin/klaim');
-    const isLaporanKehilangan = url.startsWith('/laporan-kehilangan');
+    const isLaporanKehilangan =
+        url.startsWith('/laporan-kehilangan') ||
+        url.startsWith('/admin/laporan-kehilangan');
     const isRegister = url.startsWith('/register');
     const isProfile = url.startsWith('/profile');
 
@@ -22,7 +24,7 @@ export default function Navbar() {
         { label: 'Klaim', href: '/admin/klaim', active: isKlaim },
         {
             label: 'Laporan Kehilangan',
-            href: '/laporan-kehilangan',
+            href: '/admin/laporan-kehilangan',
             active: isLaporanKehilangan,
         },
     ];
