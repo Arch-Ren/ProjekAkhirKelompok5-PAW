@@ -31,7 +31,7 @@ export default function Welcome() {
                         {/* Kiri: Logo Laravel + Text Button Dashboard & Klaim */}
                         <div className="flex items-center gap-6">
                             <Link
-                                href={route('dashboard')}
+                                href="/"
                                 className="flex items-center text-[#f38ba8] transition hover:opacity-85"
                                 aria-label="Beranda"
                             >
@@ -40,43 +40,57 @@ export default function Welcome() {
 
                             <div className="flex items-center gap-1">
                                 <Link
-                                    href={route('dashboard')}
-                                    className="rounded-lg bg-[#313244] px-3.5 py-2 text-sm font-medium text-[#cba6f7] transition hover:bg-[#45475a]"
+                                    href={isLoggedIn ? route('dashboard') : '/'}
+                                    className={`rounded-lg px-3.5 py-2 text-sm font-medium transition ${
+                                        isLoggedIn
+                                            ? 'text-[#a6adc8] hover:bg-[#313244] hover:text-[#cdd6f4]'
+                                            : 'bg-[#313244] text-[#cba6f7] hover:bg-[#45475a]'
+                                    }`}
                                 >
                                     Dashboard
                                 </Link>
-                                <Link
-                                    href={isLoggedIn ? '/admin/klaim' : '/klaim/cek'}
-                                    className="rounded-lg px-3.5 py-2 text-sm font-medium text-[#a6adc8] transition hover:bg-[#313244] hover:text-[#cdd6f4]"
-                                >
-                                    Klaim
-                                </Link>
+                                {isLoggedIn && (
+                                    <Link
+                                        href="/admin/klaim"
+                                        className="rounded-lg px-3.5 py-2 text-sm font-medium text-[#a6adc8] transition hover:bg-[#313244] hover:text-[#cdd6f4]"
+                                    >
+                                        Klaim
+                                    </Link>
+                                )}
                             </div>
                         </div>
 
-                        {/* Kanan: Log in & Register (redirect mengikuti kondisi default Laravel) */}
+                        {/* Kanan: Profil, Register & Log out jika login; hanya Log in jika belum login */}
                         <div className="flex items-center gap-3">
-                            <Link
-                                href={route('login')}
-                                className="rounded-lg px-3.5 py-2 text-sm font-medium text-[#cdd6f4] transition hover:bg-[#313244] hover:text-[#b4befe]"
-                            >
-                                Log in
-                            </Link>
-                            <Link
-                                href={route('register')}
-                                className="rounded-lg bg-[#cba6f7] px-4 py-2 text-sm font-semibold text-[#11111b] transition hover:bg-[#b4befe]"
-                            >
-                                Register
-                            </Link>
-
-                            {isLoggedIn && (
+                            {isLoggedIn ? (
+                                <>
+                                    <Link
+                                        href={route('profile.edit')}
+                                        className="rounded-lg px-3.5 py-2 text-sm font-medium text-[#cdd6f4] transition hover:bg-[#313244] hover:text-[#b4befe]"
+                                    >
+                                        Profil
+                                    </Link>
+                                    <Link
+                                        href={route('register')}
+                                        className="rounded-lg bg-[#cba6f7] px-4 py-2 text-sm font-semibold text-[#11111b] transition hover:bg-[#b4befe]"
+                                    >
+                                        Register
+                                    </Link>
+                                    <Link
+                                        href={route('logout')}
+                                        method="post"
+                                        as="button"
+                                        className="rounded-lg border border-[#45475a] px-3.5 py-2 text-sm font-medium text-[#f38ba8] transition hover:bg-[#313244]"
+                                    >
+                                        Log out
+                                    </Link>
+                                </>
+                            ) : (
                                 <Link
-                                    href={route('logout')}
-                                    method="post"
-                                    as="button"
-                                    className="rounded-lg border border-[#45475a] px-3.5 py-2 text-sm font-medium text-[#f38ba8] transition hover:bg-[#313244]"
+                                    href={route('login')}
+                                    className="rounded-lg bg-[#cba6f7] px-4 py-2 text-sm font-semibold text-[#11111b] transition hover:bg-[#b4befe]"
                                 >
-                                    Log out
+                                    Log in
                                 </Link>
                             )}
                         </div>
