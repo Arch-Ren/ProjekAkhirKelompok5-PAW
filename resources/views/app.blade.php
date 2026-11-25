@@ -10,6 +10,15 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
+        <!-- Inisialisasi tema (dark default) sebelum render awal -->
+        <script>
+            (function () {
+                var saved = localStorage.getItem('theme');
+                var isDark = saved ? saved === 'dark' : true;
+                document.documentElement.classList.toggle('dark', isDark);
+            })();
+        </script>
+
         <!-- Scripts -->
         @routes
         @viteReactRefresh
