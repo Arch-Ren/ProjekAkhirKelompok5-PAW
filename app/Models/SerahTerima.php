@@ -12,9 +12,14 @@ class SerahTerima extends Model
      */
     protected $table = 'serah_terima';
 
-    // ── Konstanta metode ──────────────────────────────────────
+    /**
+     * Primary key tabel serah_terima.
+     */
+    protected $primaryKey = 'id_serah_terima';
+
+    // ── Konstanta metode validasi ─────────────────────────────
     public const METODE_QR_FORM = 'qr_form';
-    public const METODE_KTM    = 'ktm';
+    public const METODE_KTM     = 'ktm';
 
     public const METODE_OPTIONS = [
         self::METODE_QR_FORM,
@@ -23,21 +28,17 @@ class SerahTerima extends Model
 
     // ── Mass assignment ───────────────────────────────────────
     protected $fillable = [
-        'klaim_id',
-        'barang_temuan_id',
-        'user_id',
-        'nama_pengambil',
+        'id_klaim',
         'nim_pengambil',
-        'metode',
-        'waktu_serah',
-        'catatan',
+        'metode_validasi',
+        'waktu_serah_terima',
     ];
 
     // ── Casts ─────────────────────────────────────────────────
     protected function casts(): array
     {
         return [
-            'waktu_serah' => 'datetime',
+            'waktu_serah_terima' => 'datetime',
         ];
     }
 
@@ -48,22 +49,6 @@ class SerahTerima extends Model
      */
     public function klaim(): BelongsTo
     {
-        return $this->belongsTo(Klaim::class);
-    }
-
-    /**
-     * Barang temuan yang diserahkan.
-     */
-    public function barangTemuan(): BelongsTo
-    {
-        return $this->belongsTo(BarangTemuan::class);
-    }
-
-    /**
-     * Petugas (admin/satpam) yang mencatat serah terima.
-     */
-    public function petugas(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(Klaim::class, 'id_klaim', 'id_klaim');
     }
 }

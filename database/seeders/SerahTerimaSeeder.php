@@ -2,45 +2,37 @@
 
 namespace Database\Seeders;
 
+use App\Models\Klaim;
 use App\Models\SerahTerima;
-use Illuminate\Database\Seeder;
 use Carbon\Carbon;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class SerahTerimaSeeder extends Seeder
 {
     /**
      * Seed data contoh serah terima.
      *
-     * Bergantung pada tabel klaim dan barang_temuan.
-     * Jalankan setelah KlaimSeeder dan BarangTemuanSeeder.
+     * Bergantung pada tabel klaim, barang_temuan, dan mahasiswa.
      */
     public function run(): void
     {
-        // Pastikan tabel dependensi sudah ada isinya
-        // Gunakan ID statis yang diasumsikan ada dari seeder lain
-        // Jika seeder lain belum siap, seeder ini akan di-skip
-
         if (
-            !\Illuminate\Support\Facades\Schema::hasTable('klaim') ||
-            !\Illuminate\Support\Facades\Schema::hasTable('barang_temuan')
+            !Schema::hasTable('klaim') ||
+            !Schema::hasTable('barang_temuan') ||
+            !Schema::hasTable('mahasiswa') ||
+            !Schema::hasTable('serah_terima')
         ) {
-            $this->command->warn('Tabel klaim atau barang_temuan belum ada. SerahTerimaSeeder dilewati.');
+            $this->command->warn('Tabel dependensi belum lengkap. SerahTerimaSeeder dilewati.');
             return;
         }
 
-        $klaimCount = \Illuminate\Support\Facades\DB::table('klaim')->count();
-        $barangCount = \Illuminate\Support\Facades\DB::table('barang_temuan')->count();
-
-        if ($klaimCount === 0 || $barangCount === 0) {
-            $this->command->warn('Data klaim atau barang_temuan kosong. SerahTerimaSeeder dilewati.');
-            return;
-        }
-
-        // Ambil klaim berstatus 'disetujui' yang belum punya serah terima
-        $klaimDisetujui = \Illuminate\Support\Facades\DB::table('klaim')
-            ->where('status', 'disetujui')
-            ->whereNotIn('id', function ($query) {
-                $query->select('klaim_id')->from('serah_terima');
+        // Ambil klaim berstatus 'Disetujui' yang belum punya serah terima
+        $klaimDisetujui = DB::table('klaim')
+            ->where('status_klaim', Klaim::STATUS_DISETUJUI)
+            ->whereNotIn('id_klaim', function ($query) {
+                $query->select('id_klaim')->from('serah_terima');
             })
             ->get();
 
@@ -49,28 +41,24 @@ class SerahTerimaSeeder extends Seeder
             return;
         }
 
-        $adminId = \Illuminate\Support\Facades\DB::table('users')->value('id');
-
         foreach ($klaimDisetujui->take(3) as $index => $klaim) {
             SerahTerima::create([
-                'klaim_id'        => $klaim->id,
-                'barang_temuan_id' => $klaim->barang_temuan_id,
-                'user_id'         => $adminId,
-                'nama_pengambil'  => $klaim->nama_pengklaim,
-                'nim_pengambil'   => $klaim->nim,
-                'metode'          => $index % 2 === 0
+                'id_klaim'           => $klaim->id_klaim,
+                'nim_pengambil'      => $klaim->nim_pengklaim,
+                'metode_validasi'    => $index % 2 === 0
                     ? SerahTerima::METODE_QR_FORM
                     : SerahTerima::METODE_KTM,
-                'waktu_serah'     => Carbon::now()->subDays(3 - $index),
-                'catatan'         => $index === 0
-                    ? 'Barang diterima dalam kondisi baik.'
-                    : null,
+                'waktu_serah_terima' => Carbon::now()->subDays(3 - $index),
             ]);
 
-            // Ubah status barang menjadi 'dikembalikan'
-            \Illuminate\Support\Facades\DB::table('barang_temuan')
-                ->where('id', $klaim->barang_temuan_id)
-                ->update(['status' => 'dikembalikan']);
+            // Ubah status barang menjadi 'Dikembalikan' dan status klaim menjadi 'Dikembalikan'
+            DB::table('barang_temuan')
+                ->where('id_barang', $klaim->id_barang)
+                ->update(['status_barang' => 'Dikembalikan']);
+
+            DB::table('klaim')
+                ->where('id_klaim', $klaim->id_klaim)
+                ->update(['status_klaim' => Klaim::STATUS_DIKEMBALIKAN]);
         }
 
         $this->command->info('SerahTerimaSeeder: ' . min(3, $klaimDisetujui->count()) . ' data serah terima berhasil dibuat.');
