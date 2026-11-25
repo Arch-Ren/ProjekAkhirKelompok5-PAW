@@ -27,6 +27,10 @@ Route::middleware('auth')->group(function () {
         return Inertia::render('Admin/LaporanKehilangan/Index');
     })->name('admin.laporan-kehilangan.index');
 
+    Route::get('/admin/barang-temuan', function () {
+        return Inertia::render('Admin/BarangTemuan/Index');
+    })->name('admin.barang-temuan.index');
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

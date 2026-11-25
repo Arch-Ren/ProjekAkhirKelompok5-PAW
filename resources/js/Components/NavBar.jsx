@@ -15,6 +15,9 @@ export default function Navbar() {
     const isLaporanKehilangan =
         url.startsWith('/laporan-kehilangan') ||
         url.startsWith('/admin/laporan-kehilangan');
+    const isBarangTemuan =
+        url.startsWith('/barang-temuan') ||
+        url.startsWith('/admin/barang-temuan');
     const isRegister = url.startsWith('/register');
     const isProfile = url.startsWith('/profile');
 
@@ -26,6 +29,11 @@ export default function Navbar() {
             label: 'Laporan Kehilangan',
             href: '/admin/laporan-kehilangan',
             active: isLaporanKehilangan,
+        },
+        {
+            label: 'Barang Temuan',
+            href: '/admin/barang-temuan',
+            active: isBarangTemuan,
         },
     ];
 
@@ -43,7 +51,7 @@ export default function Navbar() {
             {/* Overlay klik di luar untuk menutup dropdown mobile */}
             {isLoggedIn && mobileMenuOpen && (
                 <div
-                    className="fixed inset-0 z-20 bg-[#11111b]/40 md:hidden"
+                    className="fixed inset-0 z-20 bg-[#11111b]/40 lg:hidden"
                     onClick={closeMobileMenu}
                     aria-hidden="true"
                 />
@@ -52,7 +60,7 @@ export default function Navbar() {
             <header className="sticky top-0 z-30 border-b border-[#313244] bg-[#181825]/90 backdrop-blur-md">
                 <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
                     {/* Kiri: Logo + menu navigasi */}
-                    <div className="flex items-center gap-3 md:gap-6">
+                    <div className="flex items-center gap-3 lg:gap-6">
                         <Link
                             href="/"
                             onClick={closeMobileMenu}
@@ -63,8 +71,8 @@ export default function Navbar() {
                         </Link>
 
                         {isLoggedIn ? (
-                            /* Sudah login: di layar >= md tampil sejajar; di < md pindah ke dropdown hamburger */
-                            <div className="hidden items-center gap-1 md:flex">
+                            /* Sudah login: di layar >= lg tampil sejajar; di < lg pindah ke dropdown hamburger */
+                            <div className="hidden items-center gap-1 lg:flex">
                                 {adminNavItems.map((item) => (
                                     <Link
                                         key={item.label}
@@ -91,8 +99,8 @@ export default function Navbar() {
                     {/* Kanan */}
                     {isLoggedIn ? (
                         <>
-                            {/* Desktop (>= md): Profil, Register, Log out */}
-                            <div className="hidden items-center gap-3 md:flex">
+                            {/* Desktop (>= lg): Profil, Register, Log out */}
+                            <div className="hidden items-center gap-3 lg:flex">
                                 <Link
                                     href={route('profile.edit')}
                                     className={`whitespace-nowrap rounded-lg px-3.5 py-2 text-sm font-medium transition ${
@@ -123,7 +131,7 @@ export default function Navbar() {
                                 </Link>
                             </div>
 
-                            {/* Mobile/Small (< md): tombol hamburger */}
+                            {/* Layar < lg: tombol hamburger */}
                             <button
                                 type="button"
                                 onClick={() =>
@@ -131,7 +139,7 @@ export default function Navbar() {
                                 }
                                 aria-expanded={mobileMenuOpen}
                                 aria-label="Toggle menu navigasi"
-                                className="inline-flex items-center justify-center rounded-lg border border-[#313244] p-2 text-[#cdd6f4] transition hover:bg-[#313244] hover:text-[#cba6f7] focus:outline-none focus:ring-2 focus:ring-[#cba6f7]/50 md:hidden"
+                                className="inline-flex items-center justify-center rounded-lg border border-[#313244] p-2 text-[#cdd6f4] transition hover:bg-[#313244] hover:text-[#cba6f7] focus:outline-none focus:ring-2 focus:ring-[#cba6f7]/50 lg:hidden"
                             >
                                 {mobileMenuOpen ? (
                                     <svg
@@ -188,7 +196,7 @@ export default function Navbar() {
                         leaveFrom="opacity-100 translate-y-0"
                         leaveTo="opacity-0 -translate-y-2"
                     >
-                        <div className="absolute inset-x-0 top-full z-30 border-b border-[#313244] bg-[#181825]/95 px-4 pb-4 pt-3 shadow-xl shadow-[#11111b]/60 backdrop-blur-md md:hidden">
+                        <div className="absolute inset-x-0 top-full z-30 border-b border-[#313244] bg-[#181825]/95 px-4 pb-4 pt-3 shadow-xl shadow-[#11111b]/60 backdrop-blur-md lg:hidden">
                             {/* Bagian Atas: Dashboard, Klaim, dst. */}
                             <div className="flex flex-col gap-1">
                                 {adminNavItems.map((item) => (
