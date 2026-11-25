@@ -7,8 +7,8 @@ import { Head, Link, useForm } from '@inertiajs/react';
 
 export default function Create() {
     const { data, setData, post, processing, errors } = useForm({
-        name: '',
-        email: '',
+        nama_admin: '',
+        username: '',
         password: '',
         password_confirmation: '',
     });
@@ -33,28 +33,28 @@ export default function Create() {
                     <div className="overflow-hidden bg-white p-6 shadow-sm sm:rounded-lg">
                         <form onSubmit={submit} className="space-y-6">
                             <div>
-                                <InputLabel htmlFor="name" value="Nama" />
+                                <InputLabel htmlFor="nama_admin" value="Nama Admin" />
                                 <TextInput
-                                    id="name"
+                                    id="nama_admin"
                                     type="text"
                                     className="mt-1 block w-full"
-                                    value={data.name}
-                                    onChange={(e) => setData('name', e.target.value)}
+                                    value={data.nama_admin}
+                                    onChange={(e) => setData('nama_admin', e.target.value)}
                                     isFocused={true}
                                 />
-                                <InputError message={errors.name} className="mt-2" />
+                                <InputError message={errors.nama_admin} className="mt-2" />
                             </div>
 
                             <div>
-                                <InputLabel htmlFor="email" value="Email" />
+                                <InputLabel htmlFor="username" value="Username" />
                                 <TextInput
-                                    id="email"
-                                    type="email"
+                                    id="username"
+                                    type="text"
                                     className="mt-1 block w-full"
-                                    value={data.email}
-                                    onChange={(e) => setData('email', e.target.value)}
+                                    value={data.username}
+                                    onChange={(e) => setData('username', e.target.value)}
                                 />
-                                <InputError message={errors.email} className="mt-2" />
+                                <InputError message={errors.username} className="mt-2" />
                             </div>
 
                             <div>

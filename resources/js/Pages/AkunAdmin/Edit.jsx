@@ -7,54 +7,54 @@ import { Head, Link, useForm } from '@inertiajs/react';
 
 export default function Edit({ admin }) {
     const { data, setData, put, processing, errors } = useForm({
-        name: admin.name,
-        email: admin.email,
+        nama_admin: admin.nama_admin,
+        username: admin.username,
         password: '',
         password_confirmation: '',
     });
 
     const submit = (e) => {
         e.preventDefault();
-        put(route('akun-admin.update', admin.id));
+        put(route('akun-admin.update', admin.id_admin));
     };
 
     return (
         <AuthenticatedLayout
             header={
                 <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                    Edit Admin: {admin.name}
+                    Edit Admin: {admin.nama_admin}
                 </h2>
             }
         >
-            <Head title={`Edit Admin: ${admin.name}`} />
+            <Head title={`Edit Admin: ${admin.nama_admin}`} />
 
             <div className="py-12">
                 <div className="mx-auto max-w-2xl sm:px-6 lg:px-8">
                     <div className="overflow-hidden bg-white p-6 shadow-sm sm:rounded-lg">
                         <form onSubmit={submit} className="space-y-6">
                             <div>
-                                <InputLabel htmlFor="name" value="Nama" />
+                                <InputLabel htmlFor="nama_admin" value="Nama Admin" />
                                 <TextInput
-                                    id="name"
+                                    id="nama_admin"
                                     type="text"
                                     className="mt-1 block w-full"
-                                    value={data.name}
-                                    onChange={(e) => setData('name', e.target.value)}
+                                    value={data.nama_admin}
+                                    onChange={(e) => setData('nama_admin', e.target.value)}
                                     isFocused={true}
                                 />
-                                <InputError message={errors.name} className="mt-2" />
+                                <InputError message={errors.nama_admin} className="mt-2" />
                             </div>
 
                             <div>
-                                <InputLabel htmlFor="email" value="Email" />
+                                <InputLabel htmlFor="username" value="Username" />
                                 <TextInput
-                                    id="email"
-                                    type="email"
+                                    id="username"
+                                    type="text"
                                     className="mt-1 block w-full"
-                                    value={data.email}
-                                    onChange={(e) => setData('email', e.target.value)}
+                                    value={data.username}
+                                    onChange={(e) => setData('username', e.target.value)}
                                 />
-                                <InputError message={errors.email} className="mt-2" />
+                                <InputError message={errors.username} className="mt-2" />
                             </div>
 
                             <div>

@@ -2,38 +2,43 @@
 
 namespace App\Http\Requests;
 
+use App\Models\AkunAdmin;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules;
 
 class UpdateAkunAdminRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        return $this->user() !== null;
     }
 
     public function rules(): array
     {
         return [
-            'name'     => ['required', 'string', 'max:255'],
-            'email'    => [
-                'required', 'string', 'email', 'max:255',
-                Rule::unique('users', 'email')->ignore($this->route('akun_admin')),
+            'nama_admin' => ['required', 'string', 'max:100'],
+            'username'   => [
+                'required',
+                'string',
+                'max:50',
+                'alpha_dash',
+                Rule::unique(AkunAdmin::class, 'username')->ignore($this->route('akun_admin')),
             ],
-            'password' => ['nullable', 'string', 'min:8', 'confirmed'],
+            'password'   => ['nullable', 'confirmed', Rules\Password::defaults()],
         ];
     }
 
     public function messages(): array
     {
         return [
-            'name.required'      => 'Nama wajib diisi.',
-            'name.max'           => 'Nama maksimal 255 karakter.',
-            'email.required'     => 'Email wajib diisi.',
-            'email.email'        => 'Format email tidak valid.',
-            'email.unique'       => 'Email sudah digunakan.',
-            'password.min'       => 'Kata sandi minimal 8 karakter.',
-            'password.confirmed' => 'Konfirmasi kata sandi tidak cocok.',
+            'nama_admin.required' => 'Nama admin wajib diisi.',
+            'nama_admin.max'      => 'Nama admin maksimal 100 karakter.',
+            'username.required'   => 'Username wajib diisi.',
+            'username.max'        => 'Username maksimal 50 karakter.',
+            'username.alpha_dash' => 'Username hanya boleh berisi huruf, angka, tanda hubung, dan garis bawah.',
+            'username.unique'     => 'Username sudah terdaftar.',
+            'password.confirmed'  => 'Konfirmasi kata sandi tidak cocok.',
         ];
     }
 }

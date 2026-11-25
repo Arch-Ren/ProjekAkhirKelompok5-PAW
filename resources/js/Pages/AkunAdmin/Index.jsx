@@ -7,7 +7,7 @@ import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 
 export default function Index({ admins }) {
-    const { auth, flash } = usePage().props;
+    const { auth, flash, errors: pageErrors } = usePage().props;
     const [confirmingDeletion, setConfirmingDeletion] = useState(false);
     const [selectedAdmin, setSelectedAdmin] = useState(null);
 
@@ -19,8 +19,8 @@ export default function Index({ admins }) {
     };
 
     const deleteAdmin = () => {
-        destroy(route('akun-admin.destroy', selectedAdmin.id), {
-            onSuccess: () => {
+        destroy(route('akun-admin.destroy', selectedAdmin.id_admin), {
+            onFinish: () => {
                 setConfirmingDeletion(false);
                 setSelectedAdmin(null);
             },
@@ -55,9 +55,9 @@ export default function Index({ admins }) {
                         </div>
                     )}
 
-                    {flash?.error && (
+                    {pageErrors?.delete && (
                         <div className="mb-4 rounded-md bg-red-50 p-4 text-sm text-red-700">
-                            {flash.error}
+                            {pageErrors.delete}
                         </div>
                     )}
 
@@ -70,10 +70,10 @@ export default function Index({ admins }) {
                                             No
                                         </th>
                                         <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                            Nama
+                                            Nama Admin
                                         </th>
                                         <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                                            Email
+                                            Username
                                         </th>
                                         <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                                             Dibuat Pada
@@ -85,20 +85,20 @@ export default function Index({ admins }) {
                                 </thead>
                                 <tbody className="divide-y divide-gray-200 bg-white">
                                     {admins.map((admin, index) => (
-                                        <tr key={admin.id}>
+                                        <tr key={admin.id_admin}>
                                             <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
                                                 {index + 1}
                                             </td>
                                             <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">
-                                                {admin.name}
-                                                {admin.id === auth.user.id && (
+                                                {admin.nama_admin}
+                                                {admin.id_admin === auth.user.id_admin && (
                                                     <span className="ml-2 inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800">
                                                         Anda
                                                     </span>
                                                 )}
                                             </td>
                                             <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
-                                                {admin.email}
+                                                {admin.username}
                                             </td>
                                             <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
                                                 {new Date(admin.created_at).toLocaleDateString('id-ID', {
@@ -109,13 +109,13 @@ export default function Index({ admins }) {
                                             </td>
                                             <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
                                                 <Link
-                                                    href={route('akun-admin.edit', admin.id)}
+                                                    href={route('akun-admin.edit', admin.id_admin)}
                                                     className="text-indigo-600 hover:text-indigo-900"
                                                 >
                                                     Edit
                                                 </Link>
 
-                                                {admin.id !== auth.user.id && (
+                                                {admin.id_admin !== auth.user.id_admin && (
                                                     <button
                                                         onClick={() => confirmDelete(admin)}
                                                         className="ml-4 text-red-600 hover:text-red-900"
@@ -141,7 +141,7 @@ export default function Index({ admins }) {
 
                     <p className="mt-1 text-sm text-gray-600">
                         Apakah Anda yakin ingin menghapus akun{' '}
-                        <strong>{selectedAdmin?.name}</strong>? Tindakan ini tidak
+                        <strong>{selectedAdmin?.nama_admin}</strong>? Tindakan ini tidak
                         dapat dibatalkan.
                     </p>
 
