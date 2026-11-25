@@ -12,6 +12,7 @@ export default function Navbar() {
         ? url.startsWith('/dashboard')
         : url === '/';
     const isKlaim = url.startsWith('/klaim') || url.startsWith('/admin/klaim');
+    const isLaporanKehilangan = url.startsWith('/laporan-kehilangan');
     const isRegister = url.startsWith('/register');
     const isProfile = url.startsWith('/profile');
 
@@ -19,10 +20,15 @@ export default function Navbar() {
     const adminNavItems = [
         { label: 'Dashboard', href: route('dashboard'), active: isDashboard },
         { label: 'Klaim', href: '/admin/klaim', active: isKlaim },
+        {
+            label: 'Laporan Kehilangan',
+            href: '/laporan-kehilangan',
+            active: isLaporanKehilangan,
+        },
     ];
 
     const navButtonClass = (active) =>
-        `rounded-lg px-3.5 py-2 text-sm font-medium transition ${
+        `whitespace-nowrap rounded-lg px-3.5 py-2 text-sm font-medium transition ${
             active
                 ? 'bg-[#313244] text-[#cba6f7]'
                 : 'text-[#a6adc8] hover:bg-[#313244] hover:text-[#cdd6f4]'
@@ -35,7 +41,7 @@ export default function Navbar() {
             {/* Overlay klik di luar untuk menutup dropdown mobile */}
             {isLoggedIn && mobileMenuOpen && (
                 <div
-                    className="fixed inset-0 z-20 bg-[#11111b]/40 sm:hidden"
+                    className="fixed inset-0 z-20 bg-[#11111b]/40 md:hidden"
                     onClick={closeMobileMenu}
                     aria-hidden="true"
                 />
@@ -44,7 +50,7 @@ export default function Navbar() {
             <header className="sticky top-0 z-30 border-b border-[#313244] bg-[#181825]/90 backdrop-blur-md">
                 <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
                     {/* Kiri: Logo + menu navigasi */}
-                    <div className="flex items-center gap-3 sm:gap-6">
+                    <div className="flex items-center gap-3 md:gap-6">
                         <Link
                             href="/"
                             onClick={closeMobileMenu}
@@ -55,8 +61,8 @@ export default function Navbar() {
                         </Link>
 
                         {isLoggedIn ? (
-                            /* Sudah login: di layar >= sm tampil sejajar; di < sm pindah ke dropdown hamburger */
-                            <div className="hidden items-center gap-1 sm:flex">
+                            /* Sudah login: di layar >= md tampil sejajar; di < md pindah ke dropdown hamburger */
+                            <div className="hidden items-center gap-1 md:flex">
                                 {adminNavItems.map((item) => (
                                     <Link
                                         key={item.label}
@@ -83,11 +89,11 @@ export default function Navbar() {
                     {/* Kanan */}
                     {isLoggedIn ? (
                         <>
-                            {/* Desktop (>= sm): Profil, Register, Log out */}
-                            <div className="hidden items-center gap-3 sm:flex">
+                            {/* Desktop (>= md): Profil, Register, Log out */}
+                            <div className="hidden items-center gap-3 md:flex">
                                 <Link
                                     href={route('profile.edit')}
-                                    className={`rounded-lg px-3.5 py-2 text-sm font-medium transition ${
+                                    className={`whitespace-nowrap rounded-lg px-3.5 py-2 text-sm font-medium transition ${
                                         isProfile
                                             ? 'bg-[#313244] text-[#cba6f7]'
                                             : 'text-[#cdd6f4] hover:bg-[#313244] hover:text-[#b4befe]'
@@ -97,7 +103,7 @@ export default function Navbar() {
                                 </Link>
                                 <Link
                                     href={route('register')}
-                                    className={`rounded-lg px-4 py-2 text-sm font-semibold transition ${
+                                    className={`whitespace-nowrap rounded-lg px-4 py-2 text-sm font-semibold transition ${
                                         isRegister
                                             ? 'bg-[#b4befe] text-[#11111b]'
                                             : 'bg-[#cba6f7] text-[#11111b] hover:bg-[#b4befe]'
@@ -109,13 +115,13 @@ export default function Navbar() {
                                     href={route('logout')}
                                     method="post"
                                     as="button"
-                                    className="rounded-lg border border-[#45475a] px-3.5 py-2 text-sm font-medium text-[#f38ba8] transition hover:bg-[#313244]"
+                                    className="whitespace-nowrap rounded-lg border border-[#45475a] px-3.5 py-2 text-sm font-medium text-[#f38ba8] transition hover:bg-[#313244]"
                                 >
                                     Log out
                                 </Link>
                             </div>
 
-                            {/* Mobile (< sm): tombol hamburger */}
+                            {/* Mobile/Small (< md): tombol hamburger */}
                             <button
                                 type="button"
                                 onClick={() =>
@@ -123,7 +129,7 @@ export default function Navbar() {
                                 }
                                 aria-expanded={mobileMenuOpen}
                                 aria-label="Toggle menu navigasi"
-                                className="inline-flex items-center justify-center rounded-lg border border-[#313244] p-2 text-[#cdd6f4] transition hover:bg-[#313244] hover:text-[#cba6f7] focus:outline-none focus:ring-2 focus:ring-[#cba6f7]/50 sm:hidden"
+                                className="inline-flex items-center justify-center rounded-lg border border-[#313244] p-2 text-[#cdd6f4] transition hover:bg-[#313244] hover:text-[#cba6f7] focus:outline-none focus:ring-2 focus:ring-[#cba6f7]/50 md:hidden"
                             >
                                 {mobileMenuOpen ? (
                                     <svg
@@ -161,7 +167,7 @@ export default function Navbar() {
                         <div className="flex items-center">
                             <Link
                                 href={route('login')}
-                                className="rounded-lg bg-[#cba6f7] px-4 py-2 text-sm font-semibold text-[#11111b] transition hover:bg-[#b4befe]"
+                                className="whitespace-nowrap rounded-lg bg-[#cba6f7] px-4 py-2 text-sm font-semibold text-[#11111b] transition hover:bg-[#b4befe]"
                             >
                                 Log in
                             </Link>
@@ -180,7 +186,7 @@ export default function Navbar() {
                         leaveFrom="opacity-100 translate-y-0"
                         leaveTo="opacity-0 -translate-y-2"
                     >
-                        <div className="absolute inset-x-0 top-full z-30 border-b border-[#313244] bg-[#181825]/95 px-4 pb-4 pt-3 shadow-xl shadow-[#11111b]/60 backdrop-blur-md sm:hidden">
+                        <div className="absolute inset-x-0 top-full z-30 border-b border-[#313244] bg-[#181825]/95 px-4 pb-4 pt-3 shadow-xl shadow-[#11111b]/60 backdrop-blur-md md:hidden">
                             {/* Bagian Atas: Dashboard, Klaim, dst. */}
                             <div className="flex flex-col gap-1">
                                 {adminNavItems.map((item) => (
